@@ -2,10 +2,4 @@
 <%@include file="common/header.jspf"%>
 <%@include file="common/navigation.jspf"%>
 
-<div class="container">
-    <h1><p>어서오세요! ${username}님.</p>
-        <p>즐거운 쇼핑 되십시오!</p>
-    </h1>
-</div>
-
 <%@include file="common/footer.jspf"%>
