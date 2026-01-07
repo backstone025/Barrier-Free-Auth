@@ -32,7 +32,7 @@ public class Order {
     private LocalDate orderDate;
     private boolean isDone;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -40,7 +40,7 @@ public class Order {
         this.id = id;
     }
 
-    public long getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
@@ -48,7 +48,7 @@ public class Order {
         this.userId = userId;
     }
 
-    public long getProductId() {
+    public Long getProductId() {
         return productId;
     }
 
@@ -56,7 +56,7 @@ public class Order {
         this.productId = productId;
     }
 
-    public long getQuantity() {
+    public Long getQuantity() {
         return quantity;
     }
 
@@ -64,11 +64,11 @@ public class Order {
         this.quantity = quantity;
     }
 
-    public long getPrice() {
+    public Long getPrice() {
         return price;
     }
 
-    public void setPrice(long price) {
+    public void setPrice(Long price) {
         this.price = price;
     }
 
@@ -88,3 +88,5 @@ public class Order {
         isDone = done;
     }
 }
+// 26/1/7 수정사항
+// 1) long을 Wapper클래스인 Long으로 변환타입을 변경했습니다.(null사용을 하기 위해서)
