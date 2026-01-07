@@ -21,8 +21,7 @@ public class ProductService {
     private ProductRepository productRepository;
     @Autowired
     private AccountRepository accountRepository;
-    @Autowired
-    private OrderRepository orderRepository;
+
 
     //createProduct -> 새로운 주문을 추가하는 method
     public boolean createProduct(String name, String description, long price) {
@@ -45,7 +44,7 @@ public class ProductService {
     }
 
 
-   // updateProduct -> 기준 주문을 update하는 method
+    // updateProduct -> 기준 주문을 update하는 method
     public boolean updateProduct(long productId, String name, String description, long price) {
         if (name != null && description != null && price >= 0) {
             // DB에서 주어진 Id를 가진 Product 객체를 가져온다.
@@ -70,36 +69,38 @@ public class ProductService {
 
     // deleteProduct -> 기존 주문을 delete하는 method
     public boolean deleteProduct(Long productId) {
-        if(productId != null) {
+        if (productId != null) {
             productRepository.deleteById(productId);
             return true;
-        }
-        else
+        } else
             return false;
     }
 
 
     //getProduct -> order의 id로 DB의 정보를 끄집어와주는 method
     public ProductDTO getProduct(Long productId) {
-        try{
+        try {
             Product product = productRepository.findById(productId).get();
             ProductDTO productDTO = new ProductDTO(product);
             return productDTO;
-        } catch (NoSuchElementException e) {return null;}
+        } catch (NoSuchElementException e) {
+            return null;
+        }
     }
 
     /*
     getProductssBuyUserId -> 사용자 id로 사용자가 주문한 목록을 반환하는 method
     return : Product들의 DTO를 List로 묶어서 반환할 것
      */
-    public List<OrderDTO> getProductsByUserId(Long userId) {
-        boolean userExists = accountRepository.findById(userId).isPresent();
-        if (userExists) {
-            List<OrderDTO> orderDTOS = orderRepository.findByUserId(userId);
-            return orderDTOS;
-        }
-        else
-            return null;
-        //종료
-    }
+//    public List<ProductDTO> getProductsByUserId(Long userId) {
+//        boolean userExists = accountRepository.findById(userId).isPresent();
+//        if (userExists) {
+//            List<ProductDTO> productDTOS = productRepository.findById(userId);
+//            return orderDTOS;
+//        }
+//        else
+//            return null;
+        //}
+    //종료 ==> 후처리 List<ProductDTO>로 수정하고 이후 내용 수정!
 }
+

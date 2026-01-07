@@ -1,10 +1,19 @@
 package com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.order;
 
+import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.account.Account;
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.account.AccountRepository;
+import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.product.Product;
+import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.product.ProductDTO;
+import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.product.ProductRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 /*
@@ -17,6 +26,8 @@ public class OrderService {
     private OrderRepository orderRepository;
     @Autowired
     private AccountRepository accountRepository;
+    @Autowired
+    private ProductRepository productRepository;
 
     /*
     createOrder -> 새로운 주문을 추가하는 method
@@ -27,10 +38,27 @@ public class OrderService {
 
     return : 해당 method의 성공여부
      */
-    public boolean createOrder(long userId, long productId, long quantity) {
+    public boolean createOrder(Long userId, Long productId, Long quantity) {
+        if (userId != null && productId != null && quantity != null) {
+            LocalDate date = LocalDate.now();
+            Order order = new Order();
+            order.setUserId(userId);
+            order.setProductId(productId);
+            order.setQuantity(quantity);
+            order.setOrderDate(date);
+            order.setDone(false);    // 주문을 준비 혹은 미완료상태를 위해 초기 false사용
+            orderRepository.save(order);
+            return true;
+        } else return false;
     }
 
     public Long calculatePrice(Long productId, Long quantity) {
+        Order order = orderRepository.findById(productId).orElse(null);
+        if (order != null) {
+            order.setPrice(order.getPrice() * quantity);
+            orderRepository.save(order);
+            return order.getPrice();
+        } else return null;
     }
 
     /*
@@ -39,8 +67,23 @@ public class OrderService {
 
     return : 해당 method의 성공여부
      */
-    public boolean updateOrder(long orderId, long userId, long productId, long quantity, boolean isDone) {
-    }
+    @Transactional // 변경을 감지하는 어노테이션
+    public boolean updateOrder(Long orderId, Long userId, Long productId, Long quantity, boolean isDone) {
+        Optional<Order> orderBoolean = orderRepository.findById(orderId);
+        if (orderBoolean.isPresent()) {
+            LocalDate date = LocalDate.now();
+            Order order = orderBoolean.get();
+            order.setUserId(userId);
+            order.setProductId(productId);
+            order.setQuantity(quantity); // 가격도 같이 변경시켜야 할듯하다.
+            calculatePrice(productId, quantity);
+            order.setDone(isDone);
+            order.setOrderDate(date); // !!업데이트 정보도 필요할 거 같아서 추가했다.
+            //orderRepository.save(order); !! @Transactional이 자동으로 업데이트 해주기 떄문에 해당 문장은 필요가 없다.
+            return true;
+        } else return false;
+    } // !!업데이트를 하기 이전의 로그 데이터를 저장할 필요가 있지 않을까? @Audited가 자동으로 변경이력을 저장해주는 어노테이션이 있는데 설정과 DB 용량이 많이 필요할 수 있다는 단점이 있다.
+
 
     /*
     deleteOrder -> 기존 주문을 delete하는 method
@@ -48,6 +91,11 @@ public class OrderService {
     return : 해당 method의 성공여부
      */
     public boolean deleteOrder(Long orderId) {
+        Optional<Order> orderBoolean = orderRepository.findById(orderId);
+        if (orderBoolean.isPresent()) {
+            orderRepository.delete(orderBoolean.get());
+            return true;
+        } else return false;
     }
 
     /*
@@ -57,13 +105,30 @@ public class OrderService {
     - DTO(Data to object) : DB에 접근하지 않으며 단순히 보여주기 위해 담아놓은 객체로 이후에 JSON변환에 사용할 때 요구되는 형식이다.
      */
     public OrderDTO getOrder(Long orderId) {
+        return orderToDTO(orderId); // 해당 메서드의 로직을 orderToDTO가 수행하고 있기 때문에!
     }
 
+    public OrderDTO orderToDTO(Long orderId) {
+        Optional<Order> orderBoolean = orderRepository.findById(orderId);
+        if(orderBoolean.isPresent()) {
+            Order order = orderBoolean.get();
+            Product product = productRepository.findById(order.getProductId()).orElse(null);
+            if (product != null) {
+                return new OrderDTO(order, product.getName());
+            }
+        }
+        return null;
+    }
+
+    //함수로 만들고 ortoDTO이름으로 만들고 map에서 만들어라 마지막에 toArray하면된다.
     /*
     getOrdersBuyUserId -> 사용자 id로 사용자가 주문한 목록을 반환하는 method
 
     return : Order들의 DTO를 List로 묶어서 반환할 것
      */
     public List<OrderDTO> getOrdersByUserId(Long userId) {
+        List<Order> orderList = orderRepository.findByUserId(userId);
+        List<OrderDTO> orderDTOList = orderList.stream().map(order -> orderToDTO(order.getId())).toList();
+        return orderDTOList;
     }
 }
