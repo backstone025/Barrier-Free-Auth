@@ -1,11 +1,9 @@
 package com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.product;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
+@Table(name = "products")
 public class Product {
 
     public Product() {

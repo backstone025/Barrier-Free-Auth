@@ -3,6 +3,7 @@ package com.BaeBrother.barrier_free_auth_application.barrier_free_auth_applicati
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "accounts")
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "ACCOUNT_TYPE")
 public abstract class Account {

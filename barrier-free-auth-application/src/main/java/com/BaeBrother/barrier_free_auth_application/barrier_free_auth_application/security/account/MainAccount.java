@@ -2,8 +2,10 @@ package com.BaeBrother.barrier_free_auth_application.barrier_free_auth_applicati
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "main_accounts")
 @DiscriminatorValue("MAIN")
 public class MainAccount extends Account {
     /*

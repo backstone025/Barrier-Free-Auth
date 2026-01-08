@@ -1,13 +1,11 @@
 package com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.order;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
 @Entity
+@Table(name = "orders")
 public class Order {
     public Order() {
     }

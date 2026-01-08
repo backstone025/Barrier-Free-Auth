@@ -3,6 +3,7 @@ package com.BaeBrother.barrier_free_auth_application.barrier_free_auth_applicati
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 /*
@@ -15,7 +16,7 @@ public class ProductService {
     private ProductRepository productRepository;
 
     //createProduct -> 새로운 주문을 추가하는 method
-    public boolean createProduct(String name, String description, long price) {
+    public boolean createProduct(String name, String description, Long price) {
         if (name != null && description != null && price >= 0) {
             // 객체 생성하고, setter method를 통해 매개변수 값대로 값을 넣는다.
             Product product = new Product();
@@ -36,7 +37,7 @@ public class ProductService {
 
 
     // updateProduct -> 기준 주문을 update하는 method
-    public boolean updateProduct(long productId, String name, String description, long price) {
+    public boolean updateProduct(long productId, String name, String description, Long price) {
         if (name != null && description != null && price >= 0) {
             // DB에서 주어진 Id를 가진 Product 객체를 가져온다.
             Product product = productRepository.findById(productId).get();
@@ -77,6 +78,10 @@ public class ProductService {
         } catch (NoSuchElementException e) {
             return null;
         }
+    }
+
+    public List<ProductDTO> getAllProducts() {
+        return productRepository.findAll().stream().map(product -> new ProductDTO(product)).toList();
     }
 }
 

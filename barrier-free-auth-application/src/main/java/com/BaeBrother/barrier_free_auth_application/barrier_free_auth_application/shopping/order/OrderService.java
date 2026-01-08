@@ -77,6 +77,20 @@ public class OrderService {
         } else return false;
     } // !!업데이트를 하기 이전의 로그 데이터를 저장할 필요가 있지 않을까? @Audited가 자동으로 변경이력을 저장해주는 어노테이션이 있는데 설정과 DB 용량이 많이 필요할 수 있다는 단점이 있다.
 
+    /*
+    completeOrder -> 주문이 완료됨을 update하는 method
+
+    return 성사 여부
+     */
+    public boolean completeOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId).orElse(null);
+        if (order != null) {
+            order.setDone(true);
+            orderRepository.save(order);
+            return true;
+        }
+        return false;
+    }
 
     /*
     deleteOrder -> 기존 주문을 delete하는 method
@@ -98,17 +112,19 @@ public class OrderService {
     - DTO(Data to object) : DB에 접근하지 않으며 단순히 보여주기 위해 담아놓은 객체로 이후에 JSON변환에 사용할 때 요구되는 형식이다.
      */
     public OrderDTO getOrder(Long orderId) {
-        return orderToDTO(orderId); // 해당 메서드의 로직을 orderToDTO가 수행하고 있기 때문에!
-    }
-
-    public OrderDTO orderToDTO(Long orderId) {
         Optional<Order> orderBoolean = orderRepository.findById(orderId);
         if (orderBoolean.isPresent()) {
             Order order = orderBoolean.get();
-            Product product = productRepository.findById(order.getProductId()).orElse(null);
-            if (product != null) {
-                return new OrderDTO(order, product.getName());
-            }
+            // getOrderByUserId의 map에서 쓸데 없는 중복을 피하기 위해 기존 id를 매개변수로 받는 형태에서 객체로 받는걸로 바꿨다.
+            return orderToDTO(order);
+        }
+        return null;
+    }
+
+    public OrderDTO orderToDTO(Order order) {
+        Product product = productRepository.findById(order.getProductId()).orElse(null);
+        if (product != null) {
+            return new OrderDTO(order, product.getName());
         }
         return null;
     }
@@ -121,7 +137,7 @@ public class OrderService {
      */
     public List<OrderDTO> getOrdersByUserId(Long userId) {
         List<Order> orderList = orderRepository.findByUserId(userId);
-        List<OrderDTO> orderDTOList = orderList.stream().map(order -> orderToDTO(order.getId())).toList();
+        List<OrderDTO> orderDTOList = orderList.stream().map(order -> orderToDTO(order)).toList();
         return orderDTOList;
     }
 }
