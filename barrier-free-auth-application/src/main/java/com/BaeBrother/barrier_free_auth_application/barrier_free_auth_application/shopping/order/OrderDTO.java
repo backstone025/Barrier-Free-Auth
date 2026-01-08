@@ -3,12 +3,12 @@ package com.BaeBrother.barrier_free_auth_application.barrier_free_auth_applicati
 import java.time.LocalDate;
 
 public class OrderDTO {
-    private long id;
+    private Long id;
     private String productName;
-    private long quantity;
-    private long totalPrice;
+    private Long quantity;
+    private Long totalPrice;
     private LocalDate orderDate;
-    private boolean isDone;
+    private Boolean isDone;
 
     public OrderDTO() {
     }
@@ -19,14 +19,14 @@ public class OrderDTO {
         this.quantity = order.getQuantity();
         this.totalPrice = order.getPrice();
         this.orderDate = order.getOrderDate();
-        this.isDone = order.isDone();
+        this.isDone = order.getDone();
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -38,19 +38,19 @@ public class OrderDTO {
         this.productName = productName;
     }
 
-    public long getQuantity() {
+    public Long getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(long quantity) {
+    public void setQuantity(Long quantity) {
         this.quantity = quantity;
     }
 
-    public long getTotalPrice() {
+    public Long getTotalPrice() {
         return totalPrice;
     }
 
-    public void setTotalPrice(long totalPrice) {
+    public void setTotalPrice(Long totalPrice) {
         this.totalPrice = totalPrice;
     }
 
@@ -62,11 +62,11 @@ public class OrderDTO {
         this.orderDate = orderDate;
     }
 
-    public boolean isDone() {
+    public Boolean getDone() {
         return isDone;
     }
 
-    public void setDone(boolean done) {
+    public void setDone(Boolean done) {
         isDone = done;
     }
 }

@@ -24,19 +24,19 @@ public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-    private long userId;
-    private long productId;
-    private long quantity;
-    private long price;
+    private Long id;
+    private Long userId;
+    private Long productId;
+    private Long quantity;
+    private Long price;
     private LocalDate orderDate;
-    private boolean isDone;
+    private Boolean isDone;
 
     public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -44,7 +44,7 @@ public class Order {
         return userId;
     }
 
-    public void setUserId(long userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
@@ -52,7 +52,7 @@ public class Order {
         return productId;
     }
 
-    public void setProductId(long productId) {
+    public void setProductId(Long productId) {
         this.productId = productId;
     }
 
@@ -60,7 +60,7 @@ public class Order {
         return quantity;
     }
 
-    public void setQuantity(long quantity) {
+    public void setQuantity(Long quantity) {
         this.quantity = quantity;
     }
 
@@ -80,13 +80,14 @@ public class Order {
         this.orderDate = orderDate;
     }
 
-    public boolean isDone() {
+    public Boolean getDone() {
         return isDone;
     }
 
-    public void setDone(boolean done) {
+    public void setDone(Boolean done) {
         isDone = done;
     }
 }
 // 26/1/7 수정사항
 // 1) long을 Wapper클래스인 Long으로 변환타입을 변경했습니다.(null사용을 하기 위해서)
+// -> 다른 resource를 변경했습니다.

@@ -1,17 +1,12 @@
 package com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.order;
 
-import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.account.Account;
-import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.account.AccountRepository;
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.product.Product;
-import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.product.ProductDTO;
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.product.ProductRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,8 +19,6 @@ import java.util.Optional;
 public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
-    @Autowired
-    private AccountRepository accountRepository;
     @Autowired
     private ProductRepository productRepository;
 
@@ -110,7 +103,7 @@ public class OrderService {
 
     public OrderDTO orderToDTO(Long orderId) {
         Optional<Order> orderBoolean = orderRepository.findById(orderId);
-        if(orderBoolean.isPresent()) {
+        if (orderBoolean.isPresent()) {
             Order order = orderBoolean.get();
             Product product = productRepository.findById(order.getProductId()).orElse(null);
             if (product != null) {

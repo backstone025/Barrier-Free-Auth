@@ -1,14 +1,8 @@
 package com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.product;
 
-import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.account.Account;
-import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.account.AccountRepository;
-import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.order.OrderDTO;
-import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.order.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 /*
@@ -19,9 +13,6 @@ import java.util.NoSuchElementException;
 public class ProductService {
     @Autowired
     private ProductRepository productRepository;
-    @Autowired
-    private AccountRepository accountRepository;
-
 
     //createProduct -> 새로운 주문을 추가하는 method
     public boolean createProduct(String name, String description, long price) {
@@ -87,20 +78,5 @@ public class ProductService {
             return null;
         }
     }
-
-    /*
-    getProductssBuyUserId -> 사용자 id로 사용자가 주문한 목록을 반환하는 method
-    return : Product들의 DTO를 List로 묶어서 반환할 것
-     */
-//    public List<ProductDTO> getProductsByUserId(Long userId) {
-//        boolean userExists = accountRepository.findById(userId).isPresent();
-//        if (userExists) {
-//            List<ProductDTO> productDTOS = productRepository.findById(userId);
-//            return orderDTOS;
-//        }
-//        else
-//            return null;
-        //}
-    //종료 ==> 후처리 List<ProductDTO>로 수정하고 이후 내용 수정!
 }
 
