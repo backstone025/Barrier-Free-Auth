@@ -7,6 +7,8 @@ import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_applicatio
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.ShoppingService;
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.order.Order;
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.order.OrderDTO;
+import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.payment.Payment;
+import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.payment.PaymentDTO;
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.product.Product;
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.product.ProductDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,8 @@ public class PageController {
         model.addAttribute("userId", userId);
         return "home";
     }
+
+    // users
 
     @GetMapping(path = "/users")
     public List<Account> getUsers(ModelMap model) {
@@ -64,6 +68,8 @@ public class PageController {
 
         return ResponseEntity.created(location).build();
     }
+
+    // orders
 
     @GetMapping(path = "/orders")
     public List<OrderDTO> orders(ModelMap model) {
@@ -100,7 +106,7 @@ public class PageController {
 
     }
 
-    @PatchMapping(path = "/orders/complete/{orderId}")
+    @PatchMapping(path = "/orders/{orderId}/complete")
     public ResponseEntity<Order> completeOrder(@PathVariable("orderId") Long orderId) {
         shoppingService.completeOrder(orderId);
         return ResponseEntity.created(URI.create("/orders/" + orderId)).build();
@@ -113,8 +119,35 @@ public class PageController {
         } else {
             // 삭제 실패 메세지
         }
-
     }
+
+    // 이 부분을 테스트 하도록
+    @PostMapping(path = "/orders/{orderId}/payments")
+    public ResponseEntity<Order> paymentOrder(@PathVariable("orderId") Long orderId) {
+        // 테스트용 토큰
+        String token = tokenService.getToken();
+        Long paymentId = shoppingService.paymentOrder(orderId, token);
+        URI location;
+
+        if(paymentId != null) {
+            location = URI.create("/payments/" + paymentId);
+        }else location = URI.create("/orders");
+
+        return ResponseEntity.created(location).build();
+    }
+
+    // payments
+    @GetMapping(path = "/payments")
+    public List<PaymentDTO> getPayments() {
+        return shoppingService.getPayments();
+    }
+
+    @GetMapping(path = "/payments/{paymentId}")
+    public PaymentDTO getPayment(@PathVariable("paymentId") Long paymentId) {
+        return shoppingService.getPaymentById(paymentId);
+    }
+
+    // products
 
     @GetMapping(path = "/products")
     public List<ProductDTO> products(ModelMap model) {

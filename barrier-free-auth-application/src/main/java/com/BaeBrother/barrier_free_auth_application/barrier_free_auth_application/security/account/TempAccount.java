@@ -5,9 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "main_accounts")
-@DiscriminatorValue("MAIN")
-public class MainAccount extends Account {
-    // 보유 잔액
-    private Long totalAmount;
+@Table(name = "temp_accounts")
+@DiscriminatorValue("TEMP")
+public class TempAccount extends Account {
 }
