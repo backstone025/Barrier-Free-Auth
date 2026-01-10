@@ -16,7 +16,11 @@ public class ProductService {
     private ProductRepository productRepository;
 
     //createProduct -> 새로운 주문을 추가하는 method
-    public boolean createProduct(String name, String description, Long price) {
+    public Long createProduct(ProductDTO productDTO) {
+        String name = productDTO.getName();
+        String description = productDTO.getDescription();
+        Long price = productDTO.getPrice();
+
         if (name != null && description != null && price >= 0) {
             // 객체 생성하고, setter method를 통해 매개변수 값대로 값을 넣는다.
             Product product = new Product();
@@ -24,38 +28,41 @@ public class ProductService {
             product.setDescription(description);
             product.setPrice(price);
 
-            // 완성된 새 Product가 DB에 저장될 수 있도록 설정한다.
-            productRepository.save(product);
+            Long productId = productRepository.save(product).getId();
 
-            // DB에 문제없이 추가했으므로 true를 반환한다.
-            return true;
+            return productId;
         } else {
-            // 만일 이름, 설명, 가격이 하나라도 제대로 입력되지 않으면 false를 반환한다.
-            return false;
+            return null;
         }
     }
 
 
     // updateProduct -> 기준 주문을 update하는 method
-    public boolean updateProduct(long productId, String name, String description, Long price) {
-        if (name != null && description != null && price >= 0) {
-            // DB에서 주어진 Id를 가진 Product 객체를 가져온다.
-            Product product = productRepository.findById(productId).get();
+    public Long updateProduct(ProductDTO productDTO, Long productId) {
+        String name = productDTO.getName();
+        String description = productDTO.getDescription();
+        Long price = productDTO.getPrice();
+        // DB에서 주어진 Id를 가진 Product 객체를 가져온다.
+        Product product = productRepository.findById(productId).orElse(null);
 
-            if (product != null) {
-                // 그 객체의 정보를 수정한다.
+        if (product != null) {
+            // 그 객체의 정보를 수정한다.
+            if (name != null) {
                 product.setName(name);
-                product.setDescription(description);
-                product.setPrice(price);
-
-                // 수정이 완료된 Product를 등록한다.
-                productRepository.save(product);
-                // 설공했음을 알리기 위해 true로 반환한다.
-                return true;
             }
+            if (description != null) {
+                product.setDescription(description);
+            }
+            if (price != null) {
+                if (price >= 0) {
+                    product.setPrice(price);
+                }
+            }
+
+            return productRepository.save(product).getId();
         }
-        // 잘못된 정보 입력임을 알리기 위해 false를 반환한다.
-        return false;
+
+        return null;
     }
 
 
@@ -78,6 +85,10 @@ public class ProductService {
         } catch (NoSuchElementException e) {
             return null;
         }
+    }
+
+    public Long getProductIdByName(String name) {
+        return productRepository.findByName(name).getId();
     }
 
     public List<ProductDTO> getAllProducts() {

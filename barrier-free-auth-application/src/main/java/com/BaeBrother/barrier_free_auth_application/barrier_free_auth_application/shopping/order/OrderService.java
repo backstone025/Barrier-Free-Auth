@@ -1,8 +1,8 @@
 package com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.order;
 
+import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.account.AccountService;
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.product.Product;
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.product.ProductRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +21,8 @@ public class OrderService {
     private OrderRepository orderRepository;
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private AccountService accountService;
 
     /*
     createOrder -> 새로운 주문을 추가하는 method
@@ -31,27 +33,32 @@ public class OrderService {
 
     return : 해당 method의 성공여부
      */
-    public boolean createOrder(Long userId, Long productId, Long quantity) {
+    public Long createOrder(OrderDTO orderDTO) {
+        Long userId = accountService.getUserId();
+        Long productId = productRepository.findByName(orderDTO.getProductName()).getId();
+        Long quantity = orderDTO.getQuantity();
         if (userId != null && productId != null && quantity != null) {
             LocalDate date = LocalDate.now();
             Order order = new Order();
             order.setUserId(userId);
             order.setProductId(productId);
             order.setQuantity(quantity);
+            order.setPrice(calculatePrice(productId, quantity));
             order.setOrderDate(date);
             order.setDone(false);    // 주문을 준비 혹은 미완료상태를 위해 초기 false사용
-            orderRepository.save(order);
-            return true;
-        } else return false;
+            Long orderId = orderRepository.save(order).getId();
+            return orderId;
+        } else return null;
     }
 
     public Long calculatePrice(Long productId, Long quantity) {
-        Order order = orderRepository.findById(productId).orElse(null);
-        if (order != null) {
-            order.setPrice(order.getPrice() * quantity);
-            orderRepository.save(order);
-            return order.getPrice();
-        } else return null;
+        if (productId != null || quantity != null) {
+            Product product = productRepository.findById(productId).orElse(null);
+            if (product != null) {
+                return product.getPrice() * quantity;
+            }
+        }
+        return null;
     }
 
     /*
@@ -60,21 +67,30 @@ public class OrderService {
 
     return : 해당 method의 성공여부
      */
-    @Transactional // 변경을 감지하는 어노테이션
-    public boolean updateOrder(Long orderId, Long userId, Long productId, Long quantity, boolean isDone) {
+
+    public Long updateOrder(OrderDTO orderDTO, Long orderId) {
+        Long userId = accountService.getUserId();
+        Long productId = productRepository.findByName(orderDTO.getProductName()).getId();
+        Long quantity = orderDTO.getQuantity();
+        boolean isDone = false;
+
+
         Optional<Order> orderBoolean = orderRepository.findById(orderId);
         if (orderBoolean.isPresent()) {
             LocalDate date = LocalDate.now();
             Order order = orderBoolean.get();
             order.setUserId(userId);
-            order.setProductId(productId);
-            order.setQuantity(quantity); // 가격도 같이 변경시켜야 할듯하다.
-            calculatePrice(productId, quantity);
+            if (productId != null) {
+                order.setProductId(productId);
+            }
+            if (quantity != null) {
+                order.setQuantity(quantity); // 가격도 같이 변경시켜야 할듯하다.
+            }
+            order.setPrice(calculatePrice(productId, quantity));
             order.setDone(isDone);
             order.setOrderDate(date); // !!업데이트 정보도 필요할 거 같아서 추가했다.
-            //orderRepository.save(order); !! @Transactional이 자동으로 업데이트 해주기 떄문에 해당 문장은 필요가 없다.
-            return true;
-        } else return false;
+            return orderRepository.save(order).getId();
+        } else return null;
     } // !!업데이트를 하기 이전의 로그 데이터를 저장할 필요가 있지 않을까? @Audited가 자동으로 변경이력을 저장해주는 어노테이션이 있는데 설정과 DB 용량이 많이 필요할 수 있다는 단점이 있다.
 
     /*

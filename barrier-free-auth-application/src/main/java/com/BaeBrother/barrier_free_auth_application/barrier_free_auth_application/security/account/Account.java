@@ -7,12 +7,22 @@ import jakarta.persistence.*;
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "ACCOUNT_TYPE")
 public abstract class Account {
+    public Account() {
+    }
+
+    public Account(Long id, String username, String password, String token) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.token = token;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String username;
     private String password;
+    private String token;
 
     public Long getId() {
         return id;
@@ -36,5 +46,13 @@ public abstract class Account {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

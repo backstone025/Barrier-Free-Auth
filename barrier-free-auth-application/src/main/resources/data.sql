@@ -1,14 +1,14 @@
 
 -- 계정
 
-insert into ACCOUNTS(ID, USERNAME, PASSWORD, ACCOUNT_TYPE)
-values (10001, 'kim', '0000', 'MAIN');
+insert into ACCOUNTS(ID, USERNAME, PASSWORD, ACCOUNT_TYPE, TOKEN)
+values (10001, 'kim', '0000', 'MAIN', '111111');
 
 insert into MAIN_ACCOUNTS(ID)
 values (10001);
 
-insert into ACCOUNTS(ID, USERNAME, PASSWORD, ACCOUNT_TYPE)
-values (10002, 'user', '0000', 'MAIN');
+insert into ACCOUNTS(ID, USERNAME, PASSWORD, ACCOUNT_TYPE, TOKEN)
+values (10002, 'user', '0000', 'MAIN', '101011');
 
 insert into MAIN_ACCOUNTS(ID)
 values (10002);

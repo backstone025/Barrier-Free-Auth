@@ -21,58 +21,55 @@ public class ShoppingService {
 
     // Order
 
-    public boolean createOrder(Long productId, Long quantity) {
-        Long userId = accountService.getId();
-        boolean state = orderService.createOrder(userId, productId, quantity);
-
-        return state;
+    public Long createOrder(OrderDTO orderDTO) {
+        return orderService.createOrder(orderDTO);
     }
 
-    public boolean updateOrder(Long orderId, Long productId, Long quantity) {
-        Long userId = accountService.getId();
-        boolean isDone = orderService.getOrder(orderId).getDone();
-        boolean state = orderService.updateOrder(orderId, userId, productId, quantity, isDone);
+    public Long updateOrder(Long orderId, OrderDTO orderDTO) {
 
-        return state;
+        if (orderService.getOrder(orderId) != null) {
+            // 이미 완료된 order는 수정할 수 없다.
+            if (!orderService.getOrder(orderId).getDone()) {
+                return orderService.updateOrder(orderDTO, orderId);
+            }
+        }
+        return null;
     }
 
     // 추후, account 권한 구현 완료 후, 확인하는 절차를 추가할 계획이다.
     public boolean completeOrder(Long orderId) {
-        Long userId = accountService.getId();
+        Long userId = accountService.getUserId();
         boolean state = orderService.completeOrder(orderId);
 
         return state;
     }
 
     public boolean deleteOrder(Long orderId) {
-        Long userId = accountService.getId();
-        boolean state = orderService.deleteOrder(orderId);
-
-        return state;
+        return orderService.deleteOrder(orderId);
     }
 
     public OrderDTO getOrder(Long orderId) {
-        Long userId = accountService.getId();
+        Long userId = accountService.getUserId();
         return orderService.getOrder(orderId);
     }
 
     public List<OrderDTO> getOrders() {
-        Long userId = accountService.getId();
+        Long userId = accountService.getUserId();
         return orderService.getOrdersByUserId(userId);
     }
 
     // Product
 
-    public boolean createProduct(String productname, String Description, Long price) {
-        boolean state = productService.createProduct(productname, Description, price);
-
-        return state;
+    public Long createProduct(ProductDTO productDTO) {
+        return productService.createProduct(productDTO);
     }
 
-    public boolean updateProduct(Long productId, String productname, String Description, Long price) {
-        boolean state = productService.updateProduct(productId, productname, Description, price);
+    public Long updateProduct(ProductDTO productDTO, Long productId) {
+        if (productService.getProduct(productId) != null) {
+            return productService.updateProduct(productDTO, productId);
+        }
 
-        return state;
+        return null;
     }
 
     public boolean deleteProduct(Long productId) {
@@ -83,5 +80,9 @@ public class ShoppingService {
 
     public List<ProductDTO> getProducts() {
         return productService.getAllProducts();
+    }
+
+    public ProductDTO getProduct(Long productId) {
+        return productService.getProduct(productId);
     }
 }
