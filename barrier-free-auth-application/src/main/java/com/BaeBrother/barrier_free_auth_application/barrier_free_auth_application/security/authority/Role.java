@@ -1,10 +1,8 @@
 package com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.authority;
 
-import lombok.Getter;
 
 import java.util.List;
 
-@Getter
 public enum Role {
     MAIN_USER(List.of(
             Authority.ACCESS_PAYMENT, Authority.READ_PAYMENT,
@@ -16,6 +14,10 @@ public enum Role {
             Authority.READ_PRODUCT,
             Authority.ACCESS_PAYMENT, Authority.READ_PAYMENT
     ));
+
+    public List<Authority> getAthorities() {
+        return athorities;
+    }
 
     private final List<Authority> athorities;
 
