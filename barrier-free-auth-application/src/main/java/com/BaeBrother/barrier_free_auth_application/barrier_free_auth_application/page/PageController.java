@@ -106,10 +106,17 @@ public class PageController {
 
     }
 
+
     @PatchMapping(path = "/orders/{orderId}/complete")
-    public ResponseEntity<Order> completeOrder(@PathVariable("orderId") Long orderId) {
-        shoppingService.completeOrder(orderId);
-        return ResponseEntity.created(URI.create("/orders/" + orderId)).build();
+    public ResponseEntity<?> completeOrder(@PathVariable("orderId") Long orderId) {
+        boolean state = shoppingService.completeOrder(orderId);
+        if (state) {
+            // 상태 양호
+            return ResponseEntity.created(URI.create("/orders/" + orderId)).build();
+        }else {
+            // 문제 발생
+            return ResponseEntity.badRequest().body("결제 승인 거절");
+        }
     }
 
     @DeleteMapping(path = "/orders/{orderId}")
@@ -121,25 +128,10 @@ public class PageController {
         }
     }
 
-    // 이 부분을 테스트 하도록
-    @PostMapping(path = "/orders/{orderId}/payments")
-    public ResponseEntity<Order> paymentOrder(@PathVariable("orderId") Long orderId) {
-        // 테스트용 토큰
-        String token = tokenService.getToken();
-        Long paymentId = shoppingService.paymentOrder(orderId, token);
-        URI location;
-
-        if(paymentId != null) {
-            location = URI.create("/payments/" + paymentId);
-        }else location = URI.create("/orders");
-
-        return ResponseEntity.created(location).build();
-    }
-
     // payments
     @GetMapping(path = "/payments")
     public List<PaymentDTO> getPayments() {
-        return shoppingService.getPayments();
+        return shoppingService.getPaymentsByUserId();
     }
 
     @GetMapping(path = "/payments/{paymentId}")

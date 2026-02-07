@@ -19,8 +19,10 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    // 상품 이름
     private String name;
     private String description;
+    // 개별 상품 가격
     private Long price;
 
     public Long getId() {

@@ -7,30 +7,30 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "Payments")
 public class Payment {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;    // 결제 고유 식별자
-    private Long orderId;   // 상품 정보 id
-    private Long userId;    // 결제 사용자 id
-    private String paymentMethod;   //결제 수단
-    private Long amount; // 결제금액
-    private String status; // 결제상태
-    private LocalDateTime paidAt; //결제 완료 일시
-
-
     public Payment() {
     }
 
-    public Payment(Long id, Long orderId, Long userId, String paymentMethod, Long amount, String status, LocalDateTime paidAt){
+    public Payment(Long id, Long orderId, Long userId, Long amount, PaymentStatus status, LocalDateTime paidAt) {
         this.id = id;
         this.orderId = orderId;
         this.userId = userId;
-        this.paymentMethod = paymentMethod;
         this.amount = amount;
         this.status = status;
         this.paidAt = paidAt;
     }
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private Long orderId;
+    // 결제한 계정 id
+    private Long userId;
+    // 결제한 총 금액
+    private Long amount;
+    // 결제 상태
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus status;
+    private LocalDateTime paidAt;
 
     public Long getId() {
         return id;
@@ -56,14 +56,6 @@ public class Payment {
         this.userId = userId;
     }
 
-    public String getPaymentMethod() {
-        return paymentMethod;
-    }
-
-    public void setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
-    }
-
     public Long getAmount() {
         return amount;
     }
@@ -72,11 +64,11 @@ public class Payment {
         this.amount = amount;
     }
 
-    public String getStatus() {
+    public PaymentStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(PaymentStatus status) {
         this.status = status;
     }
 
@@ -87,6 +79,4 @@ public class Payment {
     public void setPaidAt(LocalDateTime paidAt) {
         this.paidAt = paidAt;
     }
-
-
 }

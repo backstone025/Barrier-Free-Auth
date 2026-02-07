@@ -12,11 +12,15 @@ public class Order {
 
     public Order(long id, long userId, long productId, long quantity, long price, LocalDate orderDate, boolean isDone) {
         this.id = id;
+        // 주문한 계정 id
         this.userId = userId;
         this.productId = productId;
+        // 상품 수량
         this.quantity = quantity;
+        // 총 상품 가격
         this.price = price;
         this.orderDate = orderDate;
+        // 주문 만료 여부
         this.isDone = isDone;
     }
 

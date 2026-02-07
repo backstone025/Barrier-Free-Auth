@@ -1,6 +1,7 @@
 package com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.order;
 
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.account.AccountService;
+import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.payment.*;
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.product.Product;
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.product.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ public class OrderService {
     private ProductRepository productRepository;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private PaymentService paymentService;
 
     /*
     createOrder -> 새로운 주문을 추가하는 method
@@ -74,7 +77,6 @@ public class OrderService {
         Long quantity = orderDTO.getQuantity();
         boolean isDone = false;
 
-
         Optional<Order> orderBoolean = orderRepository.findById(orderId);
         if (orderBoolean.isPresent()) {
             LocalDate date = LocalDate.now();
@@ -101,8 +103,24 @@ public class OrderService {
     public boolean completeOrder(Long orderId) {
         Order order = orderRepository.findById(orderId).orElse(null);
         if (order != null) {
-            order.setDone(true);
-            orderRepository.save(order);
+            // payment 처리
+            PaymentDTO payment = paymentService.getPaymentByOrderId(orderId);
+            // completeOrder 이력이 없을 경우
+            if (payment == null) {
+                payment = paymentService.createPayment(orderToDTO(order));
+            }
+
+            // payment 완료 처리
+            PaymentStatus paymentStatus = paymentService.completePayment(payment);
+
+            // 주문 완료 처리
+            if (paymentStatus == PaymentStatus.COMPLETED) {
+                order.setDone(true);
+                orderRepository.save(order);
+            }else if (paymentStatus == PaymentStatus.REJECTED) {
+                order.setDone(false);
+                orderRepository.save(order);
+            }
             return true;
         }
         return false;
