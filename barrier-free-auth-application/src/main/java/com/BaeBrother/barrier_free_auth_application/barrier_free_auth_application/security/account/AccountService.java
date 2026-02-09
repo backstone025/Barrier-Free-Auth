@@ -12,16 +12,16 @@ public class AccountService {
     @Autowired
     private AccountRepository accountRepository;
 
-    public Long getUserId() {
+    public Long getAccountId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
-            Account account = accountRepository.findByUsername(authentication.getName());
+            Account account = accountRepository.findByLoginId(authentication.getName());
             return account.getId();
         }
         return null;
     }
 
-    public String getUsername() {
+    public String getLoginId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
             return authentication.getName();
@@ -30,7 +30,7 @@ public class AccountService {
     }
 
     public Long saveMainAccount(MainAccount account) {
-        if(account.getUsername() != null && account.getUsername() != null) {
+        if(account.getLoginId() != null && account.getLoginId() != null) {
             MainAccount savedAccount = accountRepository.save(account);
             if (savedAccount != null) {
                 return savedAccount.getId();

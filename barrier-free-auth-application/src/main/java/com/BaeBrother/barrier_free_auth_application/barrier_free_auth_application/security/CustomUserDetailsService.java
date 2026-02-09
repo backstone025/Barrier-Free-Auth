@@ -16,17 +16,17 @@ public class CustomUserDetailsService implements UserDetailsService {
     private AccountRepository accountRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Account account = accountRepository.findByUsername(username);
+    public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
+        Account account = accountRepository.findByLoginId(loginId);
 
         if (account == null) {
-            throw new UsernameNotFoundException("유저 없음: " + username);
+            throw new UsernameNotFoundException("유저 없음: " + loginId);
         }
 
         return User.builder()
-                .username(account.getUsername())
-                .password(account.getPassword()) // DB의 '0000'
-                .roles("USER")
+                .username(account.getLoginId())
+                .password(account.getPassword())
+                .roles(account.getAccountType())
                 .build();
     }
 }

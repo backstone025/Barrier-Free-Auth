@@ -51,19 +51,19 @@ public class ShoppingService {
     }
 
     public OrderDTO getOrder(Long orderId) {
-        Long userId = accountService.getUserId();
+        Long userId = accountService.getAccountId();
         return orderService.getOrder(orderId);
     }
 
     public List<OrderDTO> getOrders() {
-        Long userId = accountService.getUserId();
+        Long userId = accountService.getAccountId();
         return orderService.getOrdersByUserId(userId);
     }
 
     // payment
 
     public List<PaymentDTO> getPaymentsByUserId() {
-        Long userId = accountService.getUserId();
+        Long userId = accountService.getAccountId();
         return paymentService.getPaymentsByUserId(userId);
     }
 

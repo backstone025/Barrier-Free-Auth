@@ -10,19 +10,20 @@ public abstract class Account {
     public Account() {
     }
 
-    public Account(Long id, String username, String password, String token) {
+    public Account(Long id, String accountType, String loginId, String password) {
         this.id = id;
-        this.username = username;
+        this.accountType = accountType;
+        this.loginId = loginId;
         this.password = password;
-        this.token = token;
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String username;
+    @Column(name = "ACCOUNT_TYPE", insertable = false, updatable = false)
+    private String accountType;
+    private String loginId;
     private String password;
-    private String token;
 
     public Long getId() {
         return id;
@@ -32,12 +33,20 @@ public abstract class Account {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getAccountType() {
+        return accountType;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setAccountType(String accountType) {
+        this.accountType = accountType;
+    }
+
+    public String getLoginId() {
+        return loginId;
+    }
+
+    public void setLoginId(String username) {
+        this.loginId = username;
     }
 
     public String getPassword() {
@@ -46,13 +55,5 @@ public abstract class Account {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
     }
 }

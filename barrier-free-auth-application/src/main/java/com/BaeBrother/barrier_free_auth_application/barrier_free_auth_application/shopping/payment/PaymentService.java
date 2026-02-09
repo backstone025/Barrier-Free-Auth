@@ -45,7 +45,7 @@ public class PaymentService {
         if (orderDTO.getTotalPrice() >= 0) {
             payment.setAmount(orderDTO.getTotalPrice());
         }
-        payment.setUserId(accountService.getUserId());
+        payment.setUserId(accountService.getAccountId());
         payment.setPaidAt(LocalDateTime.now());
         payment.setStatus(PaymentStatus.REJECTED);
 

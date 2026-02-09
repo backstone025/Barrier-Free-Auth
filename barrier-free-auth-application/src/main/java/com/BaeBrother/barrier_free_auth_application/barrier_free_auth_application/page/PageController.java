@@ -7,7 +7,6 @@ import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_applicatio
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.ShoppingService;
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.order.Order;
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.order.OrderDTO;
-import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.payment.Payment;
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.payment.PaymentDTO;
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.product.Product;
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.product.ProductDTO;
@@ -30,8 +29,8 @@ public class PageController {
 
     @RequestMapping(value = {"/", "home"}, method = RequestMethod.GET)
     public String home(ModelMap model) {
-        Long userId = accountService.getUserId();
-        String username = accountService.getUsername();
+        Long userId = accountService.getAccountId();
+        String username = accountService.getLoginId();
         model.addAttribute("username", username);
         model.addAttribute("userId", userId);
         return "home";
@@ -55,7 +54,6 @@ public class PageController {
         account.setId(null);
         // token 발행 및 채워넣기
         String token = tokenService.getToken();
-        account.setToken(token);
 
         URI location;
         Long accountId = accountService.saveMainAccount(account);
