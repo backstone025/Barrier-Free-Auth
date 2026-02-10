@@ -3,6 +3,7 @@ package com.BaeBrother.barrier_free_auth_application.barrier_free_auth_applicati
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.identity.JsonLoginSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -26,14 +27,18 @@ public class SecurityConfiguration {
         // h2 console 혀용
         http.authorizeHttpRequests(auth -> auth.requestMatchers("/h2-console/**").permitAll()
                 .anyRequest().authenticated());
+        // h2 사용을 위해 프레임 관련 보안 끄기
+        http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()));
+        // scrf 차단
+        http.csrf(csrf -> csrf.disable());
+
+        // http 기본 인증 기본값
+        http.httpBasic(withDefaults());
         // 토큰 반환하도록 설정
         http.formLogin(form -> form
                 .successHandler(jsonLoginSuccessHandler));
-        // http 기본 인증 기본값
-        http.httpBasic(withDefaults());
-        // scrf 차단
-        http.csrf(csrf -> csrf.disable());
-        http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()));
+        // OAuth2 resource server 활성화하기
+        http.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
 
         return http.build();
     }

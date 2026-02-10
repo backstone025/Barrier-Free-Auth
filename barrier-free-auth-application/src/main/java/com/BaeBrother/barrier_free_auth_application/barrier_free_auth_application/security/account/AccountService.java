@@ -1,5 +1,6 @@
 package com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.account;
 
+import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,11 +13,10 @@ public class AccountService {
     @Autowired
     private AccountRepository accountRepository;
 
-    public Long getAccountId() {
+    public Long getCurrentAccountId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()) {
-            Account account = accountRepository.findByLoginId(authentication.getName());
-            return account.getId();
+        if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails customUserDetails) {
+            return customUserDetails.getAccountId();
         }
         return null;
     }

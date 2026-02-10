@@ -29,7 +29,7 @@ public class PageController {
 
     @RequestMapping(value = {"/", "home"}, method = RequestMethod.GET)
     public String home(ModelMap model) {
-        Long userId = accountService.getAccountId();
+        Long userId = accountService.getCurrentAccountId();
         String username = accountService.getLoginId();
         model.addAttribute("username", username);
         model.addAttribute("userId", userId);

@@ -37,7 +37,7 @@ public class OrderService {
     return : 해당 method의 성공여부
      */
     public Long createOrder(OrderDTO orderDTO) {
-        Long userId = accountService.getAccountId();
+        Long userId = accountService.getCurrentAccountId();
         Long productId = productRepository.findByName(orderDTO.getProductName()).getId();
         Long quantity = orderDTO.getQuantity();
         if (userId != null && productId != null && quantity != null) {
@@ -72,7 +72,7 @@ public class OrderService {
      */
 
     public Long updateOrder(OrderDTO orderDTO, Long orderId) {
-        Long userId = accountService.getAccountId();
+        Long userId = accountService.getCurrentAccountId();
         Long productId = productRepository.findByName(orderDTO.getProductName()).getId();
         Long quantity = orderDTO.getQuantity();
         boolean isDone = false;
