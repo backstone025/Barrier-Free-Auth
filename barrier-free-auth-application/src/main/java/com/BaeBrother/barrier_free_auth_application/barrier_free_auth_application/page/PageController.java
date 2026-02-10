@@ -52,8 +52,6 @@ public class PageController {
     public ResponseEntity<MainAccount> createMainUser(@RequestBody MainAccount account) {
         // id 비워놓기
         account.setId(null);
-        // token 발행 및 채워넣기
-        String token = tokenService.getToken();
 
         URI location;
         Long accountId = accountService.saveMainAccount(account);

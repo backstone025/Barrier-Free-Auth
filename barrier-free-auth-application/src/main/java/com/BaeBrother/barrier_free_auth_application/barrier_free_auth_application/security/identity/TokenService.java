@@ -6,7 +6,7 @@ import java.util.UUID;
 
 @Service
 public class TokenService {
-    public String getToken() {
+    public String createToken() {
         String token = UUID.randomUUID().toString();
         return token;
     }

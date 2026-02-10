@@ -1,5 +1,6 @@
 package com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security;
 
+import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.identity.JsonLoginSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -21,12 +22,13 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public SecurityFilterChain fileterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain fileterChain(HttpSecurity http, JsonLoginSuccessHandler jsonLoginSuccessHandler) throws Exception {
         // h2 console 혀용
         http.authorizeHttpRequests(auth -> auth.requestMatchers("/h2-console/**").permitAll()
                 .anyRequest().authenticated());
-        // 기본적으로 제공되는 로그인 폼 사용
-        http.formLogin(withDefaults());
+        // 토큰 반환하도록 설정
+        http.formLogin(form -> form
+                .successHandler(jsonLoginSuccessHandler));
         // http 기본 인증 기본값
         http.httpBasic(withDefaults());
         // scrf 차단
