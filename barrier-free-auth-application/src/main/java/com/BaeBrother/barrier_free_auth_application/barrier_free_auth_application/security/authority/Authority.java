@@ -8,7 +8,7 @@ public class Authority {
     public Authority() {
     }
 
-    public Authority(Long id, Long accountId, String userAction, String userScope) {
+    public Authority(Long id, Long accountId, UserAction userAction, UserScope userScope) {
         this.id = id;
         this.accountId = accountId;
         this.userAction = userAction;
@@ -21,9 +21,9 @@ public class Authority {
     @Column(name = "ACCOUNT_TYPE", insertable = false, updatable = false)
     private Long accountId;
     @Enumerated(EnumType.STRING)
-    private String userAction;
+    private UserAction userAction;
     @Enumerated(EnumType.STRING)
-    private String userScope;
+    private UserScope userScope;
 
     public Long getId() {
         return id;
@@ -41,19 +41,19 @@ public class Authority {
         this.accountId = accountId;
     }
 
-    public String getUserAction() {
+    public UserAction getUserAction() {
         return userAction;
     }
 
-    public void setUserAction(String userAction) {
+    public void setUserAction(UserAction userAction) {
         this.userAction = userAction;
     }
 
-    public String getUserScope() {
+    public UserScope getUserScope() {
         return userScope;
     }
 
-    public void setUserScope(String userScope) {
+    public void setUserScope(UserScope userScope) {
         this.userScope = userScope;
     }
 }

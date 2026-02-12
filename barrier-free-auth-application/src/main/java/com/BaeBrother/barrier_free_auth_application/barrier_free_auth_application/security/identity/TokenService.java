@@ -19,5 +19,6 @@ public class TokenService {
     public String createToken() {
         Long accountId = accountService.getCurrentAccountId();
         List<Authority> authorities = authorityService.findAllByAccountId(accountId);
+        return UUID.randomUUID().toString();
     }
 }
