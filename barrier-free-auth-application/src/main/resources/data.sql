@@ -13,6 +13,13 @@ values (10002, 'user', '0000', 'MAIN');
 insert into MAIN_ACCOUNTS(ID)
 values (10002);
 
+-- 권한
+insert into AUTHORITY(ACCOUNT_ID, USER_ACTION, USER_SCOPE)
+values (10002, 'READ', 'PRODUCT');
+
+insert into AUTHORITY(ACCOUNT_ID, USER_ACTION, USER_SCOPE)
+values (10002, 'CREATE', 'ORDER');
+
 -- 제품
 insert into PRODUCTS(ID, NAME, DESCRIPTION, PRICE)
 values (20001, '코카콜라', '청량감있는 멋진 음료', 1500);

@@ -18,7 +18,6 @@ public class Authority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "ACCOUNT_TYPE", insertable = false, updatable = false)
     private Long accountId;
     @Enumerated(EnumType.STRING)
     private UserAction userAction;

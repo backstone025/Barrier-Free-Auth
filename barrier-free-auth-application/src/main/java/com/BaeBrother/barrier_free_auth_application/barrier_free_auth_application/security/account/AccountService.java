@@ -29,6 +29,14 @@ public class AccountService {
         return null;
     }
 
+    public String getAccountType() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails customUserDetails) {
+            return customUserDetails.getAccountType();
+        }
+        return null;
+    }
+
     public Long saveMainAccount(MainAccount account) {
         if(account.getLoginId() != null && account.getLoginId() != null) {
             MainAccount savedAccount = accountRepository.save(account);

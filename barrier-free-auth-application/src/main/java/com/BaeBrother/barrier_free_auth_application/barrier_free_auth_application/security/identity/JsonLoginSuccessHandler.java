@@ -19,7 +19,7 @@ public class JsonLoginSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         // 토큰 생성
-        String token = tokenService.createToken();
+        String token = tokenService.createToken(authentication);
 
         // 응답 설정
         response.setContentType("application/json");
