@@ -1,6 +1,6 @@
-package com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security;
+package com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.identity;
 
-import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.identity.JsonLoginSuccessHandler;
+import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.identity.token.TokenFilter;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.KeySourceException;
 import com.nimbusds.jose.jwk.JWK;
@@ -13,12 +13,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -41,22 +43,28 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public SecurityFilterChain fileterChain(HttpSecurity http, JsonLoginSuccessHandler jsonLoginSuccessHandler) throws Exception {
+    public SecurityFilterChain fileterChain(HttpSecurity http, JsonLoginSuccessHandler jsonLoginSuccessHandler, TokenFilter tokenFilter) throws Exception {
         // h2 console 혀용
         http.authorizeHttpRequests(auth -> auth.requestMatchers("/h2-console/**").permitAll()
                 .anyRequest().authenticated());
         // h2 사용을 위해 프레임 관련 보안 끄기
         http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()));
-        // scrf 차단
+        // csrf 차단
         http.csrf(csrf -> csrf.disable());
 
         // http 기본 인증 기본값
         http.httpBasic(withDefaults());
+        // 세션 정책을 stateless로 설정 -> 로그아웃시 토큰 새로 갱신
+        http.sessionManagement(session ->
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         // 토큰 반환하도록 설정
         http.formLogin(form -> form
                 .successHandler(jsonLoginSuccessHandler));
-        // OAuth2 resource server 활성화하기
-        http.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+        // 커스텀 필터 적용
+        http.addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);
+
+//        // OAuth2 resource server 활성화하기 -> 충돌 위험성으로 보류
+//        http.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
 
         return http.build();
     }

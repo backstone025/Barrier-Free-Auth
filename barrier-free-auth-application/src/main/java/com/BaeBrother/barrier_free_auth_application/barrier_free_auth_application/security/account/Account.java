@@ -10,11 +10,12 @@ public abstract class Account {
     public Account() {
     }
 
-    public Account(Long id, String accountType, String loginId, String password) {
+    public Account(Long id, String accountType, String loginId, String password, Long tokenVersion) {
         this.id = id;
         this.accountType = accountType;
         this.loginId = loginId;
         this.password = password;
+        this.tokenVersion = tokenVersion;
     }
 
     @Id
@@ -24,6 +25,7 @@ public abstract class Account {
     private String accountType;
     private String loginId;
     private String password;
+    private Long tokenVersion;
 
     public Long getId() {
         return id;
@@ -55,5 +57,13 @@ public abstract class Account {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Long getTokenVersion() {
+        return tokenVersion;
+    }
+
+    public void setTokenVersion(Long tokenVersion) {
+        this.tokenVersion = tokenVersion;
     }
 }

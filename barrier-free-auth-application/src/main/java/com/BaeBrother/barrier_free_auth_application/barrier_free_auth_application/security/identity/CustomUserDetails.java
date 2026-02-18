@@ -1,4 +1,4 @@
-package com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security;
+package com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.identity;
 
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.account.Account;
 import org.springframework.security.core.GrantedAuthority;

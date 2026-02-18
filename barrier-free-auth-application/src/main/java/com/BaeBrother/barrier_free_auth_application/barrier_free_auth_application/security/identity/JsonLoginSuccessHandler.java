@@ -1,6 +1,6 @@
 package com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.identity;
 
-import jakarta.servlet.FilterChain;
+import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.identity.token.TokenService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
+import javax.security.auth.login.AccountNotFoundException;
 import java.io.IOException;
 
 @Component
@@ -19,7 +20,12 @@ public class JsonLoginSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         // 토큰 생성
-        String token = tokenService.createToken(authentication);
+        String token = null;
+        try {
+            token = tokenService.createToken(authentication);
+        } catch (AccountNotFoundException e) {
+            throw new RuntimeException(e);
+        }
 
         // 응답 설정
         response.setContentType("application/json");
