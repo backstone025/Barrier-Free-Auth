@@ -2,11 +2,14 @@ package com.BaeBrother.barrier_free_auth_application.barrier_free_auth_applicati
 
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.authority.UserAction;
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.authority.UserScope;
+import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.identity.CustomUserDetails;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -15,9 +18,9 @@ public class PermissionService {
     public PermissionService() {
     }
 
-    public void verify(ServiceMappingTable methodCode, Jwt jwt) throws AccessDeniedException {
-        String accountType = jwt.getClaims().get("AccountType").toString();
-        List<AuthPair> authorities = getAuthoritiesFromToken(jwt);
+    public void verify(ServiceMappingTable methodCode, CustomUserDetails customUserDetails) throws AccessDeniedException {
+        String accountType = customUserDetails.getAccountType();
+        List<AuthPair> authorities = getAuthoritiesFromToken(customUserDetails.getAuthorities());
 
         UserAction action = methodCode.getAction();
         UserScope scope = methodCode.getScope();
@@ -30,11 +33,12 @@ public class PermissionService {
         }
     }
 
-    public List<AuthPair> getAuthoritiesFromToken(Jwt jwt) {
-        List<String> rawAuthorities = (List<String>) jwt.getClaims().get("Authorities");
-        return rawAuthorities.stream()
+    public List<AuthPair> getAuthoritiesFromToken(Collection<? extends GrantedAuthority> authorities) {
+        return authorities.stream()
                 .map(auth -> {
-                    String[] split = auth.split(":");
+                    String authorityString = auth.getAuthority();
+                    String[] split = authorityString.split(":");
+
                     return new AuthPair(
                             UserAction.valueOf(split[0]),
                             UserScope.valueOf(split[1])

@@ -3,6 +3,7 @@ package com.BaeBrother.barrier_free_auth_application.barrier_free_auth_applicati
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.account.Account;
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.account.AccountService;
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.account.MainAccount;
+import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.identity.CustomUserDetails;
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.identity.token.TokenService;
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.ShoppingService;
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.order.Order;
@@ -73,8 +74,8 @@ public class PageController {
      * 테스트 : PermissionService 검사
      */
     @GetMapping(path = "/orders")
-    public ResponseEntity<List<OrderDTO>> orders(@AuthenticationPrincipal Jwt jwt) {
-        List<OrderDTO> orders = shoppingService.getOrders(jwt);
+    public ResponseEntity<List<OrderDTO>> orders(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        List<OrderDTO> orders = shoppingService.getOrders(customUserDetails);
 
         return ResponseEntity.ok(orders);
     }

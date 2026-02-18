@@ -20,8 +20,12 @@ public class AccountService {
     public Long getCurrentAccountId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails customUserDetails) {
+            System.out.println("getCurrentAccountId 성공 : "+customUserDetails.getAccountId());
             return customUserDetails.getAccountId();
         }
+        System.out.println("getCurrentAccountId 실패 : ");
+        System.out.println(authentication != null);
+        System.out.println(authentication.getPrincipal());
         return null;
     }
 

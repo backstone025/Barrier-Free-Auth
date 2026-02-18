@@ -1,8 +1,10 @@
 package com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.identity.token;
 
+import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.account.Account;
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.account.AccountService;
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.authority.Authority;
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.authority.AuthorityService;
+import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.identity.CustomUserDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +83,14 @@ public class TokenService {
 
     // 토큰 속 정보 꺼내올 때 사용할 정보를 담는다.
     public Authentication getAuthentication(Jwt jwt) {
-        return new UsernamePasswordAuthenticationToken(jwt, Collections.emptyList(), Collections.emptyList());
+        List<String> rawAthorities = jwt.getClaim("Authorities");
+        List<SimpleGrantedAuthority> authorities = rawAthorities.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
+        Account account = accountService.getAccount(jwt.getClaim("AccountId"));
+
+        CustomUserDetails customUserDetails = new CustomUserDetails(account, authorities);
+
+        return new UsernamePasswordAuthenticationToken(customUserDetails, null, Collections.emptyList());
     }
 }

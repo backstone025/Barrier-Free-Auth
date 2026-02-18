@@ -3,6 +3,7 @@ package com.BaeBrother.barrier_free_auth_application.barrier_free_auth_applicati
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.PermissionService;
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.ServiceMappingTable;
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.account.AccountService;
+import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.identity.CustomUserDetails;
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.order.OrderDTO;
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.order.OrderService;
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.payment.PaymentDTO;
@@ -62,11 +63,11 @@ public class ShoppingService {
 
     /**
      * test : PermissionService 적용여부
-     * @param jwt
+     * @param customUserDetails
      * @return
      */
-    public List<OrderDTO> getOrders(Jwt jwt) {
-        permissionService.verify(ServiceMappingTable.ORDER_R_0, jwt);
+    public List<OrderDTO> getOrders(CustomUserDetails customUserDetails) {
+        permissionService.verify(ServiceMappingTable.ORDER_R_0, customUserDetails);
 
         Long userId = accountService.getCurrentAccountId();
         return orderService.getOrdersByUserId(userId);
