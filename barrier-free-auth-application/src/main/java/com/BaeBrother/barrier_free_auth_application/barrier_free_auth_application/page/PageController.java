@@ -12,6 +12,8 @@ import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_applicatio
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.product.ProductDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
@@ -67,9 +69,14 @@ public class PageController {
 
     // orders
 
+    /**
+     * 테스트 : PermissionService 검사
+     */
     @GetMapping(path = "/orders")
-    public List<OrderDTO> orders(ModelMap model) {
-        return shoppingService.getOrders();
+    public ResponseEntity<List<OrderDTO>> orders(@AuthenticationPrincipal Jwt jwt) {
+        List<OrderDTO> orders = shoppingService.getOrders(jwt);
+
+        return ResponseEntity.ok(orders);
     }
 
     @GetMapping(path = "/orders/{orderId}")

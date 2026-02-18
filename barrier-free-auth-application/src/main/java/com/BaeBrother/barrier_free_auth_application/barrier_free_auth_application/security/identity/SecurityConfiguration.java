@@ -52,11 +52,10 @@ public class SecurityConfiguration {
         // csrf 차단
         http.csrf(csrf -> csrf.disable());
 
-        // http 기본 인증 기본값
-        http.httpBasic(withDefaults());
-        // 세션 정책을 stateless로 설정 -> 로그아웃시 토큰 새로 갱신
-        http.sessionManagement(session ->
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+//        // 세션 정책을 stateless로 설정 -> 로그아웃시 토큰 새로 갱신
+//        http.sessionManagement(session ->
+//                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        http.formLogin(form -> form.disable());
         // 토큰 반환하도록 설정
         http.formLogin(form -> form
                 .successHandler(jsonLoginSuccessHandler));

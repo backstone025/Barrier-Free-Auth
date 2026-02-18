@@ -39,10 +39,9 @@ public class TokenFilter extends OncePerRequestFilter {
     }
 
     private String extractToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            // "Bearer " 총 7글자 이후 추출
-            return bearerToken.substring(7, bearerToken.length());
+        String header = request.getHeader("Authorization");
+        if (StringUtils.hasText(header)) {
+            return header;
         }
         return null;
     }

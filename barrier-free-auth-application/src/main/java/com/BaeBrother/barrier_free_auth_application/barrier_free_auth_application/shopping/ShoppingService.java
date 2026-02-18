@@ -1,5 +1,7 @@
 package com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping;
 
+import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.PermissionService;
+import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.ServiceMappingTable;
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.security.account.AccountService;
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.order.OrderDTO;
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.order.OrderService;
@@ -8,12 +10,15 @@ import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_applicatio
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.product.ProductDTO;
 import com.BaeBrother.barrier_free_auth_application.barrier_free_auth_application.shopping.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class ShoppingService {
+    @Autowired
+    private PermissionService permissionService;
     @Autowired
     private AccountService accountService;
     @Autowired
@@ -55,7 +60,14 @@ public class ShoppingService {
         return orderService.getOrder(orderId);
     }
 
-    public List<OrderDTO> getOrders() {
+    /**
+     * test : PermissionService 적용여부
+     * @param jwt
+     * @return
+     */
+    public List<OrderDTO> getOrders(Jwt jwt) {
+        permissionService.verify(ServiceMappingTable.ORDER_R_0, jwt);
+
         Long userId = accountService.getCurrentAccountId();
         return orderService.getOrdersByUserId(userId);
     }

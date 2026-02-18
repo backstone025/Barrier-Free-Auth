@@ -17,6 +17,7 @@ import javax.security.auth.login.AccountNotFoundException;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,6 +44,7 @@ public class TokenService {
                 .issuedAt(Instant.now())
                 .expiresAt(Instant.now().plusSeconds(60*30))
                 .subject(authentication.getName()) // 사용자 login id
+                .claim("AccountId", accountId)
                 .claim("AccountType", accountType)
                 .claim("Authorities", createScope(authorities))
                 .claim("Version", tokenVersion)
@@ -61,7 +63,6 @@ public class TokenService {
         try{
             // 기술적 검증(서명, 만료일, 형식)
             Jwt jwt = jwtDecoder.decode(token);
-
             Long accountId = jwt.getClaim("AccountId");
             Long tokenVersion = jwt.getClaim("Version");
 
@@ -78,15 +79,8 @@ public class TokenService {
         }
     }
 
-    //
+    // 토큰 속 정보 꺼내올 때 사용할 정보를 담는다.
     public Authentication getAuthentication(Jwt jwt) {
-        String scope = jwt.getClaim("Authorities");
-        Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(scope.split(" "))
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toSet());
-
-        String loginId = jwt.getSubject();
-        return new UsernamePasswordAuthenticationToken(loginId, null, authorities);
+        return new UsernamePasswordAuthenticationToken(jwt, Collections.emptyList(), Collections.emptyList());
     }
 }
